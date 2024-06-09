@@ -1,0 +1,20 @@
+* Z:\home\gosmann\Documents\EBE\EBE_homeworks\homework2\sim_part2_ex6.asc
+V1 +15V 0 15
+V2 0 -15V 15
+R5 N002 N001 1.5k
+XU2 C2 N001 +15V -15V V2 UA741
+R1 V2 P001 1k
+C1 P001 C2 0.1µ
+R2 C2 0 1k
+C2 C2 0 0.1µ
+R3 N001 0 1k
+D1 N002 V2 D
+D2 V2 N002 D
+R4 N002 V2 5k
+.model D D
+.lib C:\users\root\Documents\LTspiceXVII\lib\cmp\standard.dio
+.tran 0 100m 0 0.01m
+.lib UA741.301
+.ic V(C2)=10V
+.backanno
+.end
