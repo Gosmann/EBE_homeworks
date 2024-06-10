@@ -1,0 +1,153 @@
+*AD835 Macro-model
+*Function:Multiplier
+*
+*Revision History:
+*Rev.1 Feb 2015-Initials
+*Copyright 2015 by Analog Devices
+*
+*Refer to http://www.analog.com/Analog_Root/static/techSupport/designTools/spicemodels/license
+*for License Statement. Use of this model indicates your acceptance
+*of the terms and provisions in the License Statement.
+*
+*
+*Not modeled:
+*
+*Parameters modeled include:
+*   Multiplier scale factor adjustment, Vos, Ibias, input clipping voltage,CMRR
+*   Open Loop Gain & Phase.
+*
+* Node assignments
+*             Y1
+*             |  Y2
+*             |  | -Vs
+*             |  |  |  Z   
+*             |  |  |  | W  
+*             |  |  |  |  | +Vs  
+*             |  |  |  |  |  |  X2  
+*             |  |  |  |  |  |  | X1
+*             |  |  |  |  |  |  |  |   
+.Subckt AD835 Y1 Y2 VN Z W VP X2 X1
+*
+*Input stage amplifier Y
+*
+CC12 0 42 2e-012
+CC11 Y2 0 2e-012
+RR22 Y1 42 10
+DD14 42 21  Diode
+DD13 22 42  Diode
+VV18 Y2 22 0.7
+VV17 21 Y2 0.7 
+VV11 VP 43 3.05
+VV10 40 VN 3.05
+DD4 40 yout  Diode
+DD3 yout 43  Diode
+CC4 98 yout 4.547e-013
+RR12 98 yout 1000
+GI6 98 yout 38 Y2 0.001
+*
+EV9 42 38 44 98 1
+CC3 39 44 1.59314e-013
+RR11 39 44 1000000
+RR10 98 44 1000 
+EV8 39 98 37 98 20
+RR9 37 Y2 5000000
+RR8 42 37 5000000 
+II5 Y2 0 1.2e-005 
+II4 42 0 1e-005 
+*
+*Input stage amplifier X
+*
+RR23 X1 23 10
+DD16 23 30  Diode
+DD15 31 23  Diode
+VV27 X2 31 0.7 
+VV26 30 X2 0.7 
+VV6 VP 28 3.05 
+VV5 29 VN 3.05 
+DD2 29 xout  Diode
+DD1 xout 28  Diode
+CC2 98 xout 4.547e-013
+RR7 98 xout 1000
+GI3 98 xout 27 X2 0.001
+*
+EV4 23 27 26 98 1
+CC1 25 26 1.59314e-013
+RR6 25 26 1000000
+RR5 98 26 1000 
+EV2 25 98 24 98 20
+RR4 24 X2 5000000 
+RR3 23 24 5000000 
+II2 X2 0  1.2e-005
+II1 23 0 1e-005
+*
+*input stage amplifier Z
+*
+VV13 VP 9 3.05
+VV12 10 VN 3.05
+DD6 10 zout  Diode
+DD5 zout 9  Diode
+CC5 98 zout 4.547e-013
+GI9 98 zout W Z 0.001
+RR13 W Z 1000000000
+RR14 98 zout 1000
+CC15 Z 0 2e-012
+*
+*Multiplier Core and scaling factor adjustment
+*
+GI10 98 45 VALUE = { {if((V(Z)/V(W))<(2.01/21),(V(xout)*V(yout))/(1.05*(1-(V(Z)/V(W)))),((V(xout)*V(yout))/(1.05)))}}
+RR15 98 45 1
+CC6 98 45 3.1831e-015
+VV31 VP 35  1.3399 
+DD22 45 35  Diode
+VV30 34 VN 1.3399 
+DD21 34 45  Diode
+vV14 11 45 0
+*
+*Op-amp stage 
+*
+GI12 98 48 36 98 1.5708e-009
+CC9 98 48 1e-013
+RR20 98 48 636619800 
+RR27 98 36 35000
+VV29 33 VN 1.3399 
+DD20 33 48  Diode
+VV24 VP 32 1.3399 
+DD19 48 32  Diode
+RR18 VP 15 5000
+RR16 VP 13 5000
+QQ2 15 zout 14 Transistor
+QQ1 13 11 12 Transistor
+RR29 14 16 4483 
+RR28 12 16 4483 
+GI7 98 36 15 13 1
+*
+*output stage
+*
+VV23 47 W 0 
+DD18 VN 19  Diode
+DD17 VN 20  Diode
+GI20 20 VN 48 47 0.1
+GI13 19 VN 47 48 0.1
+CC14 0 23 2e-012
+CC13 X2 0 2e-012
+DD12 VP 19  Diode
+DD11 VP 20  Diode
+DD10 48 17  Diode
+DD9 18 48  Diode
+VV22 47 18 0.974
+VV21 17 47 0.974
+RR25 47 VP 10
+RR24 VN 47 10
+GI16 VN 47 48 VN 0.1
+GI15 47 VP VP 48 0.1
+II11 16 VN 0.0001 
+RR2 41 VP 1000
+RR1 VN 41 1000
+EV3 98 0 41 0 1
+*
+*models
+*
+.model  Diode  D
+.MODEL Transistor NPN
+.Ends
+
